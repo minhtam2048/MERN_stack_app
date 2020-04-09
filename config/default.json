@@ -1,4 +1,6 @@
 {
     "mongoURI": "mongodb+srv://minhtam2048:Luongminhtam123@devconnector-2xm3w.mongodb.net/test?retryWrites=true&w=majority",
-    "jwtSecret": "super mega ultra epic secret key"
+    "jwtSecret": "super mega ultra epic secret key",
+    "githubClientId": "004f37adfc7ba81df54d",
+    "githubSecret": "df4d97dc08a098b2d100e6ec9ceabaa62dfed323"
 }
