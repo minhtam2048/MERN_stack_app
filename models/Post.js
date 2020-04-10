@@ -1,5 +1,5 @@
-import { Schema, model } from "mongoose";
-const PostSchema = new Schema({
+const mongoose = require("mongoose");
+const PostSchema = new mongoose.Schema({
   user: {
     type: Schema.Types.ObjectId,
     ref: "users"
@@ -44,4 +44,4 @@ const PostSchema = new Schema({
   }
 });
 
-export default Post = model('post', PostSchema);
+module.exports = Post = mongoose.model('post', PostSchema);
