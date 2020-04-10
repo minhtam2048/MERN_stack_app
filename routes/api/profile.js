@@ -1,19 +1,19 @@
-const express = require("express");
-const router = express.Router();
-const request = require("request");
-const config = require("config");
-const auth = require("../../middleware/auth");
-const { check, validationResult } = require("express-validator");
+import { Router } from "express";
+const router = Router();
+import request from "request";
+import { get } from "config";
+import auth from "../../middleware/auth";
+import { check, validationResult } from "express-validator";
 
-const Profile = require("../../models/Profile");
-const User = require("../../models/User");
+import Profile, { findOne, findOneAndUpdate, find, findOneAndRemove } from "../../models/Profile";
+import { findOneAndRemove as _findOneAndRemove } from "../../models/User";
 
 // @route    GET api/profile/me
 // @desc     Get current user's profile
 // @access    private
 router.get("/me", auth, async (req, res) => {
   try {
-    const profile = await Profile.findOne({
+    const profile = await findOne({
       user: req.user.id
     }).populate("user", ["name", "avatar"]);
 
@@ -87,10 +87,10 @@ router.post(
     if (instagram) profileFields.social.instagram = instagram;
 
     try {
-      let profile = await Profile.findOne({ user: req.user.id });
+      let profile = await findOne({ user: req.user.id });
       if (profile) {
         // Update
-        profile = await Profile.findOneAndUpdate(
+        profile = await findOneAndUpdate(
           { user: req.user.id },
           { $set: profileFields },
           { new: true }
@@ -115,7 +115,7 @@ router.post(
 
 router.get("/", async (req, res) => {
   try {
-    const profiles = await Profile.find().populate("user", ["name", "avatar"]);
+    const profiles = await find().populate("user", ["name", "avatar"]);
     res.json(profiles);
   } catch (err) {
     console.error(err.message);
@@ -128,7 +128,7 @@ router.get("/", async (req, res) => {
 // @access   public
 router.get("/user/:user_id", async (req, res) => {
   try {
-    const profile = await Profile.findOne({
+    const profile = await findOne({
       user: req.params.user_id
     }).populate("user", ["name", "avatar"]);
 
@@ -155,9 +155,9 @@ router.delete("/", auth, async (req, res) => {
     // remove user's posts
 
     // Remove profile
-    await Profile.findOneAndRemove({ user: req.user.id });
+    await findOneAndRemove({ user: req.user.id });
     // Remove user
-    await User.findOneAndRemove({ _id: req.user.id });
+    await _findOneAndRemove({ _id: req.user.id });
 
     res.json({ msg: "User deleted" });
   } catch (err) {
@@ -212,7 +212,7 @@ router.put(
     };
 
     try {
-      const profile = await Profile.findOne({ user: req.user.id });
+      const profile = await findOne({ user: req.user.id });
       profile.experience.unshift(newExp);
 
       await profile.save();
@@ -230,7 +230,7 @@ router.put(
 // @access   private
 router.delete("/experience/:exp_id", auth, async (req, res) => {
   try {
-    const profile = await Profile.findOne({ user: req.user.id });
+    const profile = await findOne({ user: req.user.id });
 
     // Get remove index
     const removeIndex = profile.experience
@@ -297,7 +297,7 @@ router.put(
     };
 
     try {
-      const profile = await Profile.findOne({ user: req.user.id });
+      const profile = await findOne({ user: req.user.id });
       profile.education.unshift(newEdu); // Insert element to the start of the array
 
       await profile.save();
@@ -315,7 +315,7 @@ router.put(
 // @access   private
 router.delete("/education/:edu_id", auth, async (req, res) => {
   try {
-    const profile = await Profile.findOne({ user: req.user.id });
+    const profile = await findOne({ user: req.user.id });
 
     // Get remove index
     const removeIndex = profile.education
@@ -341,9 +341,9 @@ router.get("/github/:username", async (req, res) => {
     const options = {
       uri: `https://api.github.com/users/${
         req.params.username
-      }/repos?per_page=5&sort=created:asc&client_id=${config.get(
+      }/repos?per_page=5&sort=created:asc&client_id=${get(
         "githubClientId"
-      )}&client_secret=${config.get("githubSecret")}`,
+      )}&client_secret=${get("githubSecret")}`,
       method: "GET",
       headers: { "user-agent": "node.js" }
     };
@@ -365,4 +365,4 @@ router.get("/github/:username", async (req, res) => {
   }
 });
 
-module.exports = router;
+export default router;

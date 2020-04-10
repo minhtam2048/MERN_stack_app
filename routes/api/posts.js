@@ -1,8 +1,8 @@
-const express = require('express');
-const router = express.Router();
+import { Router } from 'express';
+const router = Router();
 
 // GET    api/posts
 // Test   route
 // access Public
 router.get('/', (req, res) => res.send('Post route'));
-module.exports = router;
+export default router;
