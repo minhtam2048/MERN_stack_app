@@ -1,6 +1,6 @@
 const express = require("express");
 const connectDB = require("./config/db");
-
+const cors = require("cors");
 const app = express();
 
 // Connect DB
@@ -8,6 +8,8 @@ connectDB();
 
 // Init middleware: get data from request's body
 app.use(express.json({ extended: false }));
+// CORS
+app.use(cors({ origin: "http://localhost:3000" }));
 
 app.get("/", (req, res) => res.send("API running"));
 

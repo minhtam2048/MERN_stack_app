@@ -7,7 +7,7 @@ const Landing = () => {
       <div className="dark-overlay">
         <div className="landing-inner">
           <h1 className="x-large">Developer connector</h1>
-          <p class="lead">
+          <p className="lead">
             Create a developer profile/portfolio, share posts and get help from
             commmunity
           </p>
